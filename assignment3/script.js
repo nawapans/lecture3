@@ -25,6 +25,9 @@ downloadButton.onclick = download
 const loader = new Rhino3dmLoader()
 loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
+window.addEventListener('click', onclick, false)
+
+
 // create a few variables to store a reference to the rhino3dm library and to the loaded definition
 let rhino, definition, doc
 
@@ -32,11 +35,11 @@ rhino3dm().then(async m => {
     rhino = m
 
     // local 
-    RhinoCompute.url = 'http://localhost:8081/' // Rhino.Compute server url
+    //RhinoCompute.url = 'http://localhost:8081/' // Rhino.Compute server url
 
     // remote
-    //RhinoCompute.url = 'https://macad2021.compute.rhino3d.com/'
-    // RhinoCompute.apiKey = getApiKey() // needed when calling a remote RhinoCompute server
+    RhinoCompute.url = 'https://macad2021.compute.rhino3d.com/'
+    RhinoCompute.apiKey = getApiKey() // needed when calling a remote RhinoCompute server
 
     //source a .gh/.ghx file in the same directory
     let url = definitionName
@@ -146,6 +149,7 @@ function getApiKey() {
     return auth
 }
 
+
 // download button handler
 function download() {
     let buffer = doc.toByteArray()
@@ -216,8 +220,8 @@ function init() {
     const ambientLight = new THREE.AmbientLight()
     scene.add(ambientLight)
 
-
 }
+
 
 // function to continuously render the scene
 function animate() {
