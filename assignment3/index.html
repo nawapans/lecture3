@@ -5,15 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:;base64,=">
-    <title>S1 - Lecture 3 - Example 2</title>
+    <title>S1 - Lecture 3 - Assignment 3</title>
     <style>
         body {
-            margin: 0;
+            margin: 60;
             font-family: sans-serif;
         }
         
         input {
-            width: 80%;
+            width: 50%;
         }
         /* CSS for a spinning animation */
         
@@ -44,14 +44,16 @@
 
 <body>
     <div id="loader"></div>
+    <div></div>
+    <div> </div>
     <div>
-        <input type="range" id="count" name="count" min="2" max="20" value="5" step="1">
-        <label for="count">count</label>
+        <input type="range" id="count" name="count" min="0" max="100" value="50" step="1">
+        <label for="count">variations number </label>
+        <input type="text" id="myText" style="text-align: center;">
+
     </div>
-    <div>
-        <input type="range" id="radius" name="radius" min="5" max="20" value="5" step="1">
-        <label for="radius">radius</label>
-    </div>
+
+
     <button id="downloadButton" disabled>Download</button>
     <script type="module" src="./script.js"></script>
 </body>

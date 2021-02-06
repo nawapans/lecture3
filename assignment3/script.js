@@ -5,16 +5,21 @@ import rhino3dm from 'https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/rhino3dm
 import { RhinoCompute } from 'https://cdn.jsdelivr.net/npm/compute-rhino3d@0.13.0-beta/compute.rhino3d.module.js'
 
 // reference the definition
-const definitionName = 'rnd_node.gh'
+const definitionName = 'roof.gh'
 
 // listen for slider change events
 const count_slider = document.getElementById('count')
-count_slider.addEventListener('input', onSliderChange, false)
-const radius_slider = document.getElementById('radius')
-radius_slider.addEventListener('input', onSliderChange, false)
+    //count_slider.addEventListener('input', onSliderChange, false)
+count_slider.addEventListener('mouseup', onSliderChange, false)
+
+//const radius_slider = document.getElementById('radius')
+//radius_slider.addEventListener('input', onSliderChange, false)
 
 const downloadButton = document.getElementById("downloadButton")
 downloadButton.onclick = download
+
+//const enterButton = document.getElementById("enter")
+//enterButton.onclick.addEventListener('input', onSliderChange, true)
 
 // set up loader for converting the results to threejs
 const loader = new Rhino3dmLoader()
@@ -27,13 +32,13 @@ rhino3dm().then(async m => {
     rhino = m
 
     // local 
-    //RhinoCompute.url = 'http://localhost:8081/' // Rhino.Compute server url
+    RhinoCompute.url = 'http://localhost:8081/' // Rhino.Compute server url
 
     // remote
-    RhinoCompute.url = 'https://macad2021.compute.rhino3d.com/'
-    RhinoCompute.apiKey = getApiKey() // needed when calling a remote RhinoCompute server
+    //RhinoCompute.url = 'https://macad2021.compute.rhino3d.com/'
+    // RhinoCompute.apiKey = getApiKey() // needed when calling a remote RhinoCompute server
 
-    // source a .gh/.ghx file in the same directory
+    //source a .gh/.ghx file in the same directory
     let url = definitionName
     let res = await fetch(url)
     let buffer = await res.arrayBuffer()
@@ -50,17 +55,17 @@ async function compute() {
 
     // get slider values
     let count = document.getElementById('count').valueAsNumber
-    let radius = document.getElementById('radius').valueAsNumber
+        //let radius = document.getElementById('radius').valueAsNumber
 
     // format data
-    let param1 = new RhinoCompute.Grasshopper.DataTree('RH_IN:radius')
-    param1.append([0], [radius])
+    //let param1 = new RhinoCompute.Grasshopper.DataTree('RH_IN:radius')
+    //param1.append([0], [radius])
     let param2 = new RhinoCompute.Grasshopper.DataTree('RH_IN:count')
     param2.append([0], [count])
 
     // Add all params to an array
     let trees = []
-    trees.push(param1)
+        // trees.push(param1)
     trees.push(param2)
 
     // Call RhinoCompute
@@ -70,6 +75,7 @@ async function compute() {
     console.log(res)
 
     collectResults(res.values)
+    document.getElementById("myText").value = count;
 
 }
 
@@ -122,7 +128,7 @@ function onSliderChange() {
     document.getElementById('loader').style.display = 'block'
 
     // disable download button
-    downloadButton.disabled = true
+    downloadButton.disabled = false
 
     compute()
 
@@ -143,7 +149,7 @@ function getApiKey() {
 // download button handler
 function download() {
     let buffer = doc.toByteArray()
-    saveByteArray("node.3dm", buffer)
+    saveByteArray("Model no." + (myText.value) + ".3dm", buffer)
 }
 
 function saveByteArray(fileName, byte) {
@@ -162,9 +168,10 @@ function init() {
 
     // create a scene and a camera
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(1, 1, 1)
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.z = -30
+    scene.background = new THREE.Color(0xf0c05a)
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000)
+    camera.position.y = -70
+    camera.position.z = 30
 
     // create the renderer and add it to the html
     renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -175,19 +182,40 @@ function init() {
     const controls = new OrbitControls(camera, renderer.domElement)
 
     // add a directional light
+    // add a directional light
     const directionalLight = new THREE.DirectionalLight(0xffffff)
-    directionalLight.intensity = 2
+    directionalLight.intensity = 1
     scene.add(directionalLight)
-    directionalLight.position.set(100, 50, 22)
+    directionalLight.position.set(400, 0, 0)
 
-    const directionalLight2 = new THREE.DirectionalLight(0xffffff)
-    directionalLight2.position.set(-20, -50, 22)
+    const directionalLight2 = new THREE.DirectionalLight(0x064a89)
+    directionalLight2.position.set(0, 100, 0)
     directionalLight2.castShadow = true
     directionalLight2.intensity = 2
     scene.add(directionalLight2)
 
+    const directionalLight3 = new THREE.DirectionalLight(0x444e58)
+    directionalLight3.position.set(-100, 0, 0)
+    directionalLight3.castShadow = true
+    directionalLight3.intensity = 2
+    scene.add(directionalLight3)
+
+    const directionalLight4 = new THREE.DirectionalLight(0xffffff)
+    directionalLight4.position.set(0, -10, 0)
+    directionalLight4.castShadow = true
+    directionalLight4.intensity = 2
+    scene.add(directionalLight4)
+
+    const directionalLight5 = new THREE.DirectionalLight('black')
+    directionalLight5.position.set(0, 0, 500)
+    directionalLight5.castShadow = true
+    directionalLight5.intensity = 1
+    scene.add(directionalLight5)
+
+
     const ambientLight = new THREE.AmbientLight()
     scene.add(ambientLight)
+
 
 }
 

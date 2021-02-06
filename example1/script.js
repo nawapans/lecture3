@@ -12,7 +12,7 @@ let scene, camera, renderer
 
 // set up 3dm loader
 const loader = new Rhino3dmLoader()
-loader.setLibraryPath( 'https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/' )
+loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/')
 
 // set up button click handlers
 const booleanButton = document.getElementById("booleanButton")
@@ -39,31 +39,31 @@ rhino3dm().then(m => {
 })
 
 // function to setup the scene, camera, renderer, and load 3d model
-async function init () {
+async function init() {
 
     // #region three.js setup
 
     // Rhino models are z-up, so set this as the default
-    THREE.Object3D.DefaultUp = new THREE.Vector3( 0, 0, 1 );
+    THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
 
     // create a scene and a camera
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(1,1,1)
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-    camera.position.y = - 50
+    scene.background = new THREE.Color(1, 1, 1)
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    camera.position.y = -50
 
     // create the renderer and add it to the html
-    renderer = new THREE.WebGLRenderer( { antialias: true } )
-    renderer.setSize( window.innerWidth, window.innerHeight )
-    document.body.appendChild( renderer.domElement )
+    renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    document.body.appendChild(renderer.domElement)
 
     // add some controls to orbit the camera
-    const controls = new OrbitControls( camera, renderer.domElement );
+    const controls = new OrbitControls(camera, renderer.domElement);
 
     // add a directional light
-    const directionalLight = new THREE.DirectionalLight( 0xffffff );
+    const directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.intensity = 2;
-    scene.add( directionalLight );
+    scene.add(directionalLight);
 
     // #endregion
 
@@ -79,18 +79,18 @@ async function init () {
 
     // we can use Rhino3dmLoader.parse() to load the model into three.js for visualisation without
     // having to download it again
-    loader.parse( buffer, function ( object ) {
+    loader.parse(buffer, function(object) {
 
         hideSpinner()
 
-        object.traverse(function (child) {
+        object.traverse(function(child) {
             if (child.isMesh) {
                 child.material = material
             }
         })
-        scene.add( object )
-        
-    } )    
+        scene.add(object)
+
+    })
 
     // enable boolean button
     booleanButton.disabled = false
@@ -99,15 +99,15 @@ async function init () {
 }
 
 // function to continuously render the scene
-function animate () {
+function animate() {
 
-    requestAnimationFrame( animate )
-    renderer.render( scene, camera )
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera)
 
 }
 
 // boolean button handler
-async function boolean () {
+async function boolean() {
 
     // disable boolean button
     booleanButton.disabled = true
@@ -134,10 +134,11 @@ async function boolean () {
     // perform mesh boolean union on server
     const res = await RhinoCompute.Mesh.createBooleanUnion(meshes)
     console.log(res)
+    console.log(rhino.CommonObject.decode(res[0]))
 
     // clear scene
-    while(scene.children.length > 0){ 
-        scene.remove(scene.children[0]); 
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
     }
 
     // clear doc
@@ -151,29 +152,29 @@ async function boolean () {
 
     // load new doc into scene
     const buffer = new Uint8Array(doc.toByteArray()).buffer
-    loader.parse( buffer, function ( object ) {
+    loader.parse(buffer, function(object) {
 
         hideSpinner()
 
-        object.traverse(function (child) {
+        object.traverse(function(child) {
             if (child.isMesh) {
                 child.material = material
             }
         })
-        scene.add( object )
+        scene.add(object)
 
         // enable download button
         downloadButton.disabled = false
-    } )
+    })
 
     // enable download button
     downloadButton.disabled = false
 }
 
 // ask user for api key and cache in browser session so we don't need to keep asking
-function getApiKey () {
+function getApiKey() {
     let auth = null
-    auth = localStorage['compute_api_key'] // comment this line to ignore cached key
+        // auth = localStorage['compute_api_key'] // comment this line to ignore cached key
     if (auth == null) {
         auth = window.prompt('RhinoCompute Server API Key')
         if (auth != null) {
@@ -184,9 +185,9 @@ function getApiKey () {
 }
 
 // download button handler
-function download () {
+function download() {
     let buffer = doc.toByteArray()
-    let blob = new Blob([ buffer ], { type: "application/octect-stream" })
+    let blob = new Blob([buffer], { type: "application/octect-stream" })
     let link = document.createElement('a')
     link.href = window.URL.createObjectURL(blob)
     link.download = 'boolean.3dm'
