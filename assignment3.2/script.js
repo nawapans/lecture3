@@ -20,6 +20,9 @@ Z3_slider.addEventListener('mouseup', onSliderChange, false)
 const Z4_slider = document.getElementById('Z4')
 Z4_slider.addEventListener('mouseup', onSliderChange, false)
 
+const UV_slider = document.getElementById('UV')
+UV_slider.addEventListener('mouseup', onSliderChange, false)
+
 //const radius_slider = document.getElementById('radius')
 //radius_slider.addEventListener('input', onSliderChange, false)
 
@@ -70,6 +73,7 @@ async function compute() {
     let Z2 = document.getElementById('Z2').valueAsNumber
     let Z3 = document.getElementById('Z3').valueAsNumber
     let Z4 = document.getElementById('Z4').valueAsNumber
+    let UV = document.getElementById('UV').valueAsNumber
         //let radius = document.getElementById('radius').valueAsNumber
 
     // format data
@@ -82,6 +86,8 @@ async function compute() {
     param3.append([0], [Z3])
     let param4 = new RhinoCompute.Grasshopper.DataTree('RH_IN:Z4')
     param4.append([0], [Z4])
+    let param5 = new RhinoCompute.Grasshopper.DataTree('RH_IN:UV')
+    param5.append([0], [UV])
 
     // Add all params to an array
     let trees = []
@@ -90,6 +96,7 @@ async function compute() {
     trees.push(param2)
     trees.push(param3)
     trees.push(param4)
+    trees.push(param5)
 
     // Call RhinoCompute
 
@@ -102,6 +109,7 @@ async function compute() {
     document.getElementById("myText2").value = Z2;
     document.getElementById("myText3").value = Z3;
     document.getElementById("myText4").value = Z4;
+    document.getElementById("myText5").value = UV;
 
 }
 
@@ -176,7 +184,7 @@ function getApiKey() {
 // download button handler
 function download() {
     let buffer = doc.toByteArray()
-    saveByteArray("Model no." + "-Z1:" + (Z1.value) + "-Z2:" + (Z2.value) + "-Z3:" + (Z3.value) + "-Z4:" + (Z4.value) + ".3dm", buffer)
+    saveByteArray("Model" + (UV.value) + "x" + (UV.value) + "-Z1:" + (Z1.value) + "-Z2:" + (Z2.value) + "-Z3:" + (Z3.value) + "-Z4:" + (Z4.value) + ".3dm", buffer)
 }
 
 function saveByteArray(fileName, byte) {
